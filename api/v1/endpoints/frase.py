@@ -6,6 +6,7 @@ from sqlalchemy.future import select
 
 from models.frases_models import FrasesModel
 from schemas.frases_schema import FrasesSchema
+
 from core.deps import get_session
 
 router = APIRouter()
@@ -56,7 +57,7 @@ async def put_frase(frase_id: int, frase: FrasesSchema, db: AsyncSession = Depen
             raise HTTPException(detail="Frase não encontrada", status_code=status.HTTP_404_NOT_FOUND)
         
 @router.delete("/{frase_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_profissao(frase_id: int, db: AssertionError = Depends(get_session)):
+async def delete_frase(frase_id: int, db: AssertionError = Depends(get_session)):
     async with db as session:
         query = select(FrasesModel).filter(FrasesModel.id == frase_id)
         result = await session.execute(query)
