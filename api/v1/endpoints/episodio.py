@@ -43,7 +43,7 @@ async def get_ep(ep_id: int, db: AsyncSession = Depends(get_session)):
 @router.put("/{ep_id}", response_model=EpisodiosSchema, status_code=status.HTTP_202_ACCEPTED)
 async def put_ep(ep_id: int, episodio: EpisodiosSchema, db: AsyncSession = Depends(get_session)):
     async with db as session:
-        query = select(EpisodiosModel).filter(EpisodiosModel.id == ep_id)
+        query = select(EpisodiosModel).filter(EpisodiosModel.id_episodio == ep_id)
         result = await session.execute(query)
         ep_up = result.scalar_one_or_none()
 
@@ -59,7 +59,7 @@ async def put_ep(ep_id: int, episodio: EpisodiosSchema, db: AsyncSession = Depen
 @router.delete("/{ep_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_ep(ep_id: int, db: AssertionError = Depends(get_session)):
     async with db as session:
-        query = select(EpisodiosModel).filter(EpisodiosModel.id == ep_id)
+        query = select(EpisodiosModel).filter(EpisodiosModel.id_episodio == ep_id)
         result = await session.execute(query)
         ep_del = result.scalar_one_or_none()
 
