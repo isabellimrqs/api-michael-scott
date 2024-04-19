@@ -13,7 +13,7 @@ router = APIRouter()
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=FrasesSchema)
 async def post_frase(frase: FrasesSchema, db: AsyncSession = Depends(get_session)):
-    nova_frase = FrasesModel(quote = frase.quote) 
+    nova_frase = FrasesModel(quote = frase.quote, ep_id = frase.ep_id) 
     db.add(nova_frase)
     await db.commit()
 
@@ -24,7 +24,7 @@ async def get_frases(db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(FrasesModel)
         result = await session.execute(query)
-        frases: List[FrasesModel] = result.scalars().all()
+        frases: List[FrasesModel] = result.unique().scalars().all()
 
         return frases
 
@@ -33,7 +33,7 @@ async def get_frase(frase_id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(FrasesModel).filter(FrasesModel.id == frase_id)
         result = await session.execute(query)
-        frase = result.scalar_one_or_none()
+        frase = result.unique().scalar_one_or_none()
 
         if frase:
             return frase
@@ -45,7 +45,7 @@ async def put_frase(frase_id: int, frase: FrasesSchema, db: AsyncSession = Depen
     async with db as session:
         query = select(FrasesModel).filter(FrasesModel.id == frase_id)
         result = await session.execute(query)
-        frase_up = result.scalar_one_or_none()
+        frase_up = result.unique().scalar_one_or_none()
 
         if frase_up:
             frase_up.quote = frase.quote
@@ -61,7 +61,7 @@ async def delete_frase(frase_id: int, db: AssertionError = Depends(get_session))
     async with db as session:
         query = select(FrasesModel).filter(FrasesModel.id == frase_id)
         result = await session.execute(query)
-        frase_del = result.scalar_one_or_none()
+        frase_del = result.unique().scalar_one_or_none()
 
         if frase_del:
             await session.delete(frase_del)

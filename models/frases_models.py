@@ -8,5 +8,13 @@ class FrasesModel(settings.DBBaseModel):
     id: int = Column(Integer(), primary_key=True, autoincrement=True)
     quote: str = Column(String(500))
     ep_id: int = Column(Integer(), ForeignKey("episodios.id_episodio"))
-    episodio = relationship("EpisodiosModel", back_populates="frases")
+    frase_no_episodio = relationship("EpisodiosModel", back_populates="frases", lazy='joined')
+
+
+
+
+
    
+
+
+

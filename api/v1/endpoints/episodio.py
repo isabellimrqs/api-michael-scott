@@ -24,7 +24,7 @@ async def get_eps(db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(EpisodiosModel)
         result = await session.execute(query)
-        episodios: List[EpisodiosModel] = result.scalars().all()
+        episodios: List[EpisodiosModel] = result.unique().scalars().all()
 
         return episodios
     
@@ -33,7 +33,7 @@ async def get_ep(ep_id: int, db: AsyncSession = Depends(get_session)):
     async with db as session:
         query = select(EpisodiosModel).filter(EpisodiosModel.id_episodio == ep_id)
         result = await session.execute(query)
-        episodio = result.scalar_one_or_none()
+        episodio = result.unique().scalar_one_or_none()
 
         if episodio:
             return episodio
@@ -45,10 +45,10 @@ async def put_ep(ep_id: int, episodio: EpisodiosSchema, db: AsyncSession = Depen
     async with db as session:
         query = select(EpisodiosModel).filter(EpisodiosModel.id_episodio == ep_id)
         result = await session.execute(query)
-        ep_up = result.scalar_one_or_none()
+        ep_up = result.unique().scalar_one_or_none()
 
         if ep_up:
-            ep_up.quote = episodio.quote
+            ep_up.episodio = episodio.episodio
 
             await session.commit()
             return ep_up
@@ -61,7 +61,7 @@ async def delete_ep(ep_id: int, db: AssertionError = Depends(get_session)):
     async with db as session:
         query = select(EpisodiosModel).filter(EpisodiosModel.id_episodio == ep_id)
         result = await session.execute(query)
-        ep_del = result.scalar_one_or_none()
+        ep_del = result.unique().scalar_one_or_none()
 
         if ep_del:
             await session.delete(ep_del)

@@ -7,4 +7,6 @@ class EpisodiosModel(settings.DBBaseModel):
 
     id_episodio: int = Column(Integer(), primary_key=True, autoincrement=True)
     episodio: str = Column(String(500))
-    frases = relationship("FrasesModel", back_populates="episodio")
+    frases = relationship("FrasesModel", back_populates="frase_no_episodio", lazy='joined')
+
+
